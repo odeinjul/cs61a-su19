@@ -71,8 +71,8 @@ def ten_pairs(n):
         return count(n // 10, k)
     if n < 10:
         return 0
-    return ten_pairs(n // 10) + count(n // 10, 10 - n % 10)
-    
+    return ten_pairs(n // 10) + count(n // 10, 10 - n % 10) #Find how many digits can be pair with the one is working with & recursive into the next digit
+
     # Awesome!
     from exuanbo
     """
