@@ -31,6 +31,55 @@ def new_sample(path, i):
             next(f)  # Discard first i-1 lines
         return next(f).strip()
 """
+
+def analyze(sample_paragraph, typed_string, start_time, end_time):
+    lst = []
+    lst += [analyze_velocity(typed_string, start_time, end_time)]
+    lst += [analyze_accuracy(sample_paragraph, typed_string)]
+    return lst
+def analyze_velocity(typed_string, start_time, end_time):
+    words = len(typed_string)
+    words_per_min = words * 12 / (end_time - start_time)
+    return words_per_min
+
+def analyze_accuracy(sample_paragraph, typed_string):
+    sample = split(sample_paragraph)
+    typed = split(typed_string)
+    count = 0
+    if(len(sample) <= len(typed)):
+        for x in range(len(sample)):
+            if(sample[x] == typed[x]):
+                count += 1
+        return count * 100 / len(sample)
+    elif(len(typed) == 0):
+        return 0.0
+    else:
+        for x in range(len(typed)):
+            if(sample[x] == typed[x]):
+                count += 1
+        return count * 100 / len(typed)
+
+def pig_latin(word):
+    id = find_first_vovel(word)
+    if is_vowel(word[0]):
+        return word + "way"
+    elif(id == -1):
+        return word + "ay"
+    else:
+        return word[id:] + word[:id] + "ay"
+    
+
+def is_vowel(char):
+    if char in 'aeiou':
+        return True
+    else: 
+        return False
+
+def find_first_vovel(word):
+    for index,char in enumerate(word):
+        if is_vowel(char):
+            return index
+    return -1
 # END Q1-5
 
 # Question 6
