@@ -80,6 +80,22 @@ def find_first_vovel(word):
         if is_vowel(char):
             return index
     return -1
+
+# Phase 2 passcoe: 'ratification'
+def autocorrect(user_input, words_list, score_function):
+    if(user_input in words_list):
+        return user_input
+    else:
+        return min(words_list, key = lambda t: score_function(user_input, t))
+def swap_score(s1, s2):
+    #disregard all extra characters
+    if(not s1 or not s2):
+        return 0
+    else:
+        if(s1[0] != s2[0]):
+            return 1 + swap_score(s1[1:], s2[1:])
+        else:
+            return swap_score(s1[1:], s2[1:])
 # END Q1-5
 
 # Question 6
