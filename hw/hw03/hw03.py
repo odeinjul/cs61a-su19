@@ -314,16 +314,18 @@ def zero(f):
 
 def successor(n):
     return lambda f: lambda x: f(n(f)(x))
-
+    # (x)
 def one(f):
     """Church numeral 1: same as successor(zero)"""
     "*** YOUR CODE HERE ***"
     return lambda x: f(zero(f)(x))
+    #f(x)
 
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
     "*** YOUR CODE HERE ***"
     return lambda x: f(one(f)(x))
+    #f(f(x))
 
 three = successor(two)
 
@@ -341,6 +343,7 @@ def church_to_int(n):
     """
     "*** YOUR CODE HERE ***"
     return n(lambda x: x + 1)(0)
+
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
 
@@ -349,6 +352,7 @@ def add_church(m, n):
     """
     "*** YOUR CODE HERE ***"
     return lambda f: lambda x: n(f)(x) + m(f)(x)
+    # m(f)(n(f)(x))
 
 def mul_church(m, n):
     """Return the Church numeral for m * n, for Church numerals m and n.
@@ -361,6 +365,7 @@ def mul_church(m, n):
     """
     "*** YOUR CODE HERE ***"
     return lambda f: lambda x: n(f)(x) * m(f)(x)
+    # m(n(f))
 
 def pow_church(m, n):
     """Return the Church numeral m ** n, for Church numerals m and n.
@@ -372,3 +377,6 @@ def pow_church(m, n):
     """
     "*** YOUR CODE HERE ***"
     return lambda f: lambda x: n(f)(x) ** m(f)(x)
+    # n(m)
+# Referenced: https://zhuanlan.zhihu.com/p/267917164
+# Maybe I still can't comprehand the Church Number, will try to fully understand it another day.
