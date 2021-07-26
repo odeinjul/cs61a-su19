@@ -81,12 +81,13 @@ def find_first_vovel(word):
             return index
     return -1
 
-# Phase 2 passcoe: 'ratification'
+# Phase 2 passcode: 'ratification'
 def autocorrect(user_input, words_list, score_function):
     if(user_input in words_list):
         return user_input
     else:
         return min(words_list, key = lambda t: score_function(user_input, t))
+
 def swap_score(s1, s2):
     #disregard all extra characters
     if(not s1 or not s2):
@@ -96,6 +97,7 @@ def swap_score(s1, s2):
             return 1 + swap_score(s1[1:], s2[1:])
         else:
             return swap_score(s1[1:], s2[1:])
+
 # END Q1-5
 
 # Question 6
@@ -103,26 +105,66 @@ def swap_score(s1, s2):
 def score_function(word1, word2):
     """A score_function that computes the edit distance between word1 and word2."""
 
-    if ______________: # Fill in the condition
+    if not word1 or not word2 or word1 in word2 or word2 in word1: # Fill in the condition
         # BEGIN Q6
         "*** YOUR CODE HERE ***"
+        return abs(len(word1) - len(word2))
         # END Q6
 
-    elif ___________: # Feel free to remove or add additional cases
+    elif word1[0] == word2[0]: # Feel free to remove or add additional cases
         # BEGIN Q6
         "*** YOUR CODE HERE ***"
+        return score_function(word1[1:], word2[1:])
         # END Q6
     
     else:
-        add_char = ______________  # Fill in these lines
-        remove_char = ______________ 
-        substitute_char = ______________ 
+        add_char = 1 + score_function(word1, word2[1:])  # Fill in these lines
+        remove_char = 1 + score_function(word1[1:], word2)
+        substitute_char = 1 + score_function(word1[1:], word2[1:])
         # BEGIN Q6
         "*** YOUR CODE HERE ***"
+        return min(add_char, remove_char, substitute_char)
         # END Q6
 
 KEY_DISTANCES = get_key_distances()
 
 # BEGIN Q7-8
 "*** YOUR CODE HERE ***"
+def score_function_accurate(word1, word2):
+    if not word1 or not word2 or word1 in word2 or word2 in word1: 
+        return abs(len(word1) - len(word2))
+
+    elif word1[0] == word2[0]:
+        return score_function_accurate(word1[1:], word2[1:])
+    
+    else:
+        add_char = 1 + score_function_accurate(word1, word2[1:])
+        remove_char = 1 + score_function_accurate(word1[1:], word2)
+        substitute_char = KEY_DISTANCES[word1[0], word2[0]] + score_function_accurate(word1[1:], word2[1:])
+        return min(add_char, remove_char, substitute_char)
+
+def score_function_final(word1, word2):
+    if not word1 or not word2 or word1 in word2 or word2 in word1: 
+        return abs(len(word1) - len(word2))
+
+    elif word1[0] == word2[0]:
+        return score_function_final(word1[1:], word2[1:])
+    
+    else:
+        add_char = 1 + score_function_final(word1, word2[1:])
+        remove_char = 1 + score_function_final(word1[1:], word2)
+        substitute_char = KEY_DISTANCES[word1[0], word2[0]] + score_function_final(word1[1:], word2[1:])
+        return min(add_char, remove_char, substitute_char)
+
+def mem(f):
+    cache = dict()
+    def mem_f(*args):
+        if args in cache:
+            return cache[args]
+        result = f(*args)
+        cache[args] = result
+        return result
+    return mem_f
+    
+score_function_final = mem(score_function_final)
 # END Q7-8
