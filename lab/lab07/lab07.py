@@ -40,6 +40,14 @@ def num_trees(n):
 
     """
     "*** YOUR CODE HERE ***"
+    if n == 1:
+        return 1
+    elif n == 2:
+        return 1
+    total = 0
+    for i in range(1,n):
+        total += num_trees(i)*num_trees(n-i)
+    return total
 
 def prune_leaves(t, vals):
     """Return a modified copy of t with all leaves that have a label
