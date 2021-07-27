@@ -74,6 +74,10 @@ def prune_leaves(t, vals):
       6
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t) and label(t) in vals:
+            return
+    else:
+        return tree(label(t), [pr for pr in [prune_leaves(br, vals) for br in branches(t)] if pr is not None])
 
 def dict_to_lst(d):
     """Returns a list containing all the (key, value) pairs in d as two-element
@@ -88,9 +92,9 @@ def dict_to_lst(d):
     """
     result = []
     for _ in range(len(d)):
-        pair = min(d.items(), key=______________________)
-        d.pop(_________)
-        _______________________
+        pair = min(d.items(), key=lambda pair:pair[1])  # sort by value
+        d.pop(pair[0])  # pop by key
+        result += pair
     return result
 
 # Tree ADT
