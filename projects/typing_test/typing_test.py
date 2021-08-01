@@ -20,6 +20,7 @@ def new_sample(path, i):
     return lines_from_file(path)[i]
 
 """
+
 Other's solution, maybe i'll comprehand it someday later
 def lines_from_file(path):
     with open(path) as f:
@@ -30,6 +31,7 @@ def new_sample(path, i):
         for _ in range(i):
             next(f)  # Discard first i-1 lines
         return next(f).strip()
+        
 """
 
 def analyze(sample_paragraph, typed_string, start_time, end_time):
