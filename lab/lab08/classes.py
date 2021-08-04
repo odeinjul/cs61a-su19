@@ -1,5 +1,6 @@
 # Magic the Lambda-ing!
 
+from os import sendfile
 import random
 
 class Card(object):
@@ -23,6 +24,9 @@ class Card(object):
         500
         """
         "*** YOUR CODE HERE ***"
+        self.name = name
+        self.attack = attack
+        self.defense = defense
 
     def power(self, other_card):
         """
@@ -42,6 +46,7 @@ class Card(object):
         50.0
         """
         "*** YOUR CODE HERE ***"
+        return (self.attack - other_card.defense / 2)
 
 
     def effect(self, other_card, player, opponent):
@@ -80,6 +85,9 @@ class Player(object):
         self.deck = deck
         self.name = name
         "*** YOUR CODE HERE ***"
+        self.hand = []
+        for _ in range(5):
+            self.hand += [self.deck.draw()]
 
     def draw(self):
         """Draw a card from the player's deck and add it to their hand.
@@ -94,6 +102,7 @@ class Player(object):
         """
         assert not self.deck.is_empty(), 'Deck is empty!'
         "*** YOUR CODE HERE ***"
+        self.hand += [self.deck.draw()]
 
     def play(self, card_index):
         """Remove and return a card from the player's hand at the given index.
@@ -110,6 +119,9 @@ class Player(object):
         2
         """
         "*** YOUR CODE HERE ***"
+        temp = self.hand[card_index]
+        self.hand.remove(temp)
+        return temp
 
 
     def display_hand(self):
@@ -152,8 +164,10 @@ class TutorCard(Card):
         """
         "*** YOUR CODE HERE ***"
         #Uncomment the line below when you've finished implementing this method!
-        #print('{} discarded and re-drew 3 cards!'.format(opponent.name))
-
+        print('{} discarded and re-drew 3 cards!'.format(opponent.name))
+        for _ in range(3):
+            opponent.hand.remove(opponent.hand[0])
+            opponent.hand += [opponent.deck.draw()]
     def copy(self):
         """
         Create a copy of this card.
@@ -177,7 +191,9 @@ class TACard(Card):
         300
         """
         "*** YOUR CODE HERE ***"
-
+        temp = other_card.attack
+        other_card.attack = other_card.defense
+        other_card.defense = temp
 
     def copy(self):
         """
@@ -211,7 +227,12 @@ class InstructorCard(Card):
         """
         "*** YOUR CODE HERE ***"
         #Uncomment the line below when you've finished implementing this method!
-        #print('{}\'s card added to {}\'s hand and deck!'.format(opponent.name, player.name))
+        print('{}\'s card added to {}\'s hand and deck!'.format(opponent.name, player.name))
+        for card in player.deck.cards:
+            card.attack += 300
+            card.defense += 300
+        player.deck.cards += [other_card.copy()]
+        player.hand += [other_card.copy()]
 
     def copy(self):
         """
