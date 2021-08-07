@@ -207,23 +207,28 @@ class ThrowerAnt(Ant):
     implemented = True
     damage = 1
     food_cost = 3
+    max_range = None
+    min_range = None
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
 
-    def nearest_bee(self, hive):
+    def nearest_bee(self, hive, attr = 0):
         """Return the nearest Bee in a Place that is not the HIVE, connected to
         the ThrowerAnt's Place by following entrances.
 
         This method returns None if there is no such Bee (or none in range).
         """
         # BEGIN Problem 3 and 4
-        now = self.place
-        while now.bees == []:
-            if(now.entrance == hive):
-                return None
-            else:
-                now = now.entrance 
-        # print(now.name, now.bees)
-        return random_or_none(now.bees)
+        def find_nearest_bees_start_from(place, distance=0):
+            if place is hive:
+                return
+            if len(place.bees) > 0 and (
+                (self.max_range is None and self.min_range is None) or
+                (self.max_range is not None and self.max_range >= distance) or
+                (self.min_range is not None and self.min_range <= distance)):
+                return place.bees
+            return find_nearest_bees_start_from(place.entrance, distance + 1)
+
+        return random_or_none(find_nearest_bees_start_from(self.place))
         # END Problem 3 and 4
 
     def throw_at(self, target):
@@ -248,18 +253,22 @@ class ShortThrower(ThrowerAnt):
     """A ThrowerAnt that only throws leaves at Bees at most 3 places away."""
 
     name = 'Short'
+    food_cost = 2
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    max_range = 3
     # END Problem 4
 
 class LongThrower(ThrowerAnt):
     """A ThrowerAnt that only throws leaves at Bees at least 5 places away."""
 
     name = 'Long'
+    food_cost = 2
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    min_range = 5
     # END Problem 4
 
 class FireAnt(Ant):
