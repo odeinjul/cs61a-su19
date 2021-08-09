@@ -175,8 +175,8 @@ def reverse_other(t):
             return
         if is_odd_depth:
             reversed_label_list = [b.label for b in t.branches][::-1]
-            for b_index, b in enumerate(t.branches):
-                b.label = reversed_label_list[b_index]
+            for b_index, b in enumerate(t.branches): # with index
+                b.label = reversed_label_list[b_index] 
         for b in t.branches:
             helper(b, not is_odd_depth)
     return helper(t)
