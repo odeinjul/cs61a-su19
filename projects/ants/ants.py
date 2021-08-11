@@ -100,6 +100,7 @@ class Insect(object):
 
     is_ant = False
     damage = 0
+    is_watersafe = False
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, armor, place=None):
@@ -136,6 +137,7 @@ class Bee(Insect):
 
     name = 'Bee'
     damage = 1
+    is_watersafe = True
     # OVERRIDE CLASS ATTRIBUTES HERE
 
 
@@ -424,7 +426,7 @@ class TankAnt(BodyguardAnt):
     food_cost = 6
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 10
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 10
 
     def action(self, colony):
@@ -443,27 +445,64 @@ class Water(Place):
         its armor to 0."""
         # BEGIN Problem 11
         "*** YOUR CODE HERE ***"
+        Place.add_insect(self, insect)
+        if(self.ant):
+            if(self.ant.is_watersafe == False):
+                self.ant.reduce_armor(self.ant.armor)
+        if(self.bees):
+            for bee in self.bees[:]:
+                if(bee.is_watersafe == False):
+                    bee.reduce_armor(bee.armor)
         # END Problem 11
 
 # BEGIN Problem 12
 # The ScubaThrower class
+class ScubaThrower(ThrowerAnt):
+    name = "Scuba"
+    food_cost = 6
+    is_watersafe = True
+    implemented = True
 # END Problem 12
 
 # BEGIN Problem 13
-class QueenAnt(Ant):  # You should change this line
+class QueenAnt(ScubaThrower):  # You should change this line
 # END Problem 13
     """The Queen of the colony. The game is over if a bee enters her place."""
 
     name = 'Queen'
+    food_cost = 7
+    placed = 1
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 13
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 13
 
     def __init__(self, armor=1):
         # BEGIN Problem 13
         "*** YOUR CODE HERE ***"
+        super().__init__(armor)
+        self.placed = QueenAnt.placed
+        if(QueenAnt.placed == 1):
+            QueenAnt.placed == 0
+        self.buffed = []
         # END Problem 13
+
+    def buff(self, ant):
+        if(ant not in self.buffed):
+            ant.damage *= 2
+            self.buffed += [ant]
+
+    def buff_start(self, place):
+        if(place is None):
+            return
+        current_ant = place.ant
+        if(current_ant != None):
+            self.buff(current_ant)
+            if(current_ant.is_container == True):
+                contained_ant = current_ant.contained_ant
+                if(contained_ant != None):
+                    self.buff(contained_ant)
+        self.buff_start(place.exit)
 
     def action(self, colony):
         """A queen ant throws a leaf, but also doubles the damage of ants
@@ -473,6 +512,14 @@ class QueenAnt(Ant):  # You should change this line
         """
         # BEGIN Problem 13
         "*** YOUR CODE HERE ***"
+        if(self.placed == 0):
+            self.reduce_armor(self.armor)
+            return 
+        super().action(colony)
+        for ant in self.buffed[:]:
+            if ant.armor <= 0:
+                self.buffed.remove(ant)
+        self.buff_start(self.place.exit)
         # END Problem 13
 
     def reduce_armor(self, amount):
@@ -481,6 +528,9 @@ class QueenAnt(Ant):  # You should change this line
         """
         # BEGIN Problem 13
         "*** YOUR CODE HERE ***"
+        ScubaThrower.reduce_armor(amount)
+        if(self.armor <= 0 and self.placed == 1):
+            bees_win()
         # END Problem 13
 
 class AntRemover(Ant):
