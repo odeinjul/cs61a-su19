@@ -21,6 +21,7 @@
 ; expect 1
 (equal? 2 2)
 ; expect #t
+
 ; END PROBLEM 0
 
 ;;; These are examples from several sections of "The Structure
