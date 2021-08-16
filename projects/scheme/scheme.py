@@ -34,6 +34,12 @@ def scheme_eval(expr, env, _=None): # Optional third argument is ignored
     else:
         # BEGIN PROBLEM 5
         "*** YOUR CODE HERE ***"
+        rator = scheme_eval(first,env)
+        check_procedure(rator)
+        def temp(x):
+            return scheme_eval(x, env)
+        rands = rest.map(temp)
+        return scheme_apply(rator, rands, env)
         # END PROBLEM 5
 
 def self_evaluating(expr):
@@ -79,12 +85,17 @@ class Frame(object):
         """Define Scheme SYMBOL to have VALUE."""
         # BEGIN PROBLEM 3
         "*** YOUR CODE HERE ***"
+        self.bindings[symbol]= value
         # END PROBLEM 3
 
     def lookup(self, symbol):
         """Return the value bound to SYMBOL. Errors if SYMBOL is not found."""
         # BEGIN PROBLEM 3
         "*** YOUR CODE HERE ***"
+        if symbol in self.bindings:
+            return self.bindings[symbol]
+        if self.parent is not None:
+            return self.parent.lookup(symbol)
         # END PROBLEM 3
         raise SchemeError('unknown identifier: {0}'.format(symbol))
 
@@ -143,6 +154,12 @@ class BuiltinProcedure(Procedure):
             args = args.second
         # BEGIN PROBLEM 4
         "*** YOUR CODE HERE ***"
+        if self.use_env is True:
+            python_args.append(env)
+        try:
+            return self.fn(*python_args)
+        except TypeError as e:
+            raise SchemeError
         # END PROBLEM 4
 
 class LambdaProcedure(Procedure):
@@ -202,6 +219,9 @@ def do_define_form(expressions, env):
         check_form(expressions, 2, 2)
         # BEGIN PROBLEM 6
         "*** YOUR CODE HERE ***"
+        value = scheme_eval(expressions.second.first, env)
+        env.define(target, value)
+        return target
         # END PROBLEM 6
     elif isinstance(target, Pair) and scheme_symbolp(target.first):
         # BEGIN PROBLEM 10
