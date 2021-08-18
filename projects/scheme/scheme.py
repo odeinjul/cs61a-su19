@@ -60,7 +60,12 @@ def eval_all(expressions, env):
     """Evaluate each expression in the Scheme list EXPRESSIONS in
     environment ENV and return the value of the last."""
     # BEGIN PROBLEM 8
-    return scheme_eval(expressions.first, env)
+    if expressions is nil:
+        return
+    if expressions.second is nil:
+        return scheme_eval(expressions.first, env)
+    scheme_eval(expressions.first, env)
+    return eval_all(expressions.second, env)
     # END PROBLEM 8
 
 ################
@@ -113,6 +118,16 @@ class Frame(object):
         """
         # BEGIN PROBLEM 11
         "*** YOUR CODE HERE ***"
+        child = Frame(self)
+        if(len(formals) != len(vals)):
+            raise SchemeError('len(formals) != len(vals)')
+        def bind_formals_to_vals(formals=formals, vals=vals):
+            if formals is nil and vals is nil:
+                return
+            child.define(formals.first, vals.first)
+            bind_formals_to_vals(formals.second, vals.second)
+        bind_formals_to_vals()
+        return child
         # END PROBLEM 11
 
 ##############
@@ -178,6 +193,8 @@ class LambdaProcedure(Procedure):
         of values, for a lexically-scoped call evaluated in environment ENV."""
         # BEGIN PROBLEM 12
         "*** YOUR CODE HERE ***"
+        call_frame = self.env.make_child_frame(self.formals, args)
+        return call_frame
         # END PROBLEM 12
 
     def __str__(self):
@@ -226,6 +243,10 @@ def do_define_form(expressions, env):
     elif isinstance(target, Pair) and scheme_symbolp(target.first):
         # BEGIN PROBLEM 10
         "*** YOUR CODE HERE ***"
+        name, para, body = target.first, target.second, expressions.second
+        procedure = LambdaProcedure(para, body, env)
+        env.define(name, procedure)
+        return name
         # END PROBLEM 10
     else:
         bad_target = target.first if isinstance(target, Pair) else target
@@ -236,6 +257,7 @@ def do_quote_form(expressions, env):
     check_form(expressions, 1, 1)
     # BEGIN PROBLEM 7
     "*** YOUR CODE HERE ***"
+    return expressions.first
     # END PROBLEM 7
 
 def do_begin_form(expressions, env):
@@ -250,6 +272,7 @@ def do_lambda_form(expressions, env):
     check_formals(formals)
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    return LambdaProcedure(expressions.first, expressions.second, env)
     # END PROBLEM 9
 
 def do_if_form(expressions, env):

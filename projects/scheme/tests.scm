@@ -21,7 +21,12 @@
 ; expect 1
 (equal? 2 2)
 ; expect #t
-
+(define x 0)
+;expect x
+((define x (+ x 1)) 2)
+;expect Error
+x
+;expect 1
 ; END PROBLEM 0
 
 ;;; These are examples from several sections of "The Structure
