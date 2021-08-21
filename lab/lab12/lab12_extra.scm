@@ -1,5 +1,10 @@
 (define-macro (switch expr cases)
-    'YOUR-CODE-HERE
+    (let ((val (eval expr)))
+    (cons
+      'cond
+      (map
+        (lambda (case) (cons (equal? val (car case)) (cdr case)))
+        cases)))
 )
 
 (define (flatmap f x)
