@@ -15,11 +15,11 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ___________________________:
-        largest = max(_______________, key=____________________)
-        _________________________
-    for __ in _____________:
-        ___________________
+    while (len(t.branches) > n):
+        largest = max(t.branches, key=lambda x: x.label)
+        t.branches.remove(largest)
+    for br in t.branches:
+        prune_small(br, n)
 
 # Tree Class
 class Tree:
@@ -96,10 +96,10 @@ class Tree:
             return tree_str
         return print_tree(self).rstrip()
 
+# https://github.com/yngz/cs61a/blob/master/lab/lab13/lab13_extra.py#L4
 def num_splits(s, d):
     """Return the number of ways in which s can be partitioned into two
     sublists that have sums within d of each other.
-
     >>> num_splits([1, 5, 4], 0)  # splits to [1, 4] and [5]
     1
     >>> num_splits([6, 1, 3], 1)  # no split possible
@@ -110,6 +110,16 @@ def num_splits(s, d):
     12
     """
     "*** YOUR CODE HERE ***"
+
+    def helper(xs, n=0):
+        if len(xs) == 0:
+            if abs(n) <= d:
+                return 1
+            return 0
+        first, rest = xs[0], xs[1:]
+        return helper(rest, n + first) + helper(rest, n - first)
+
+    return helper(s) // 2 # why?
 
 def insert(link, value, index):
     """Insert a value into a Link at the given index.
@@ -127,7 +137,21 @@ def insert(link, value, index):
     IndexError
     """
     "*** YOUR CODE HERE ***"
+    if index > link_len(link) - 1:
+        raise IndexError("list index out of range")
+    def helper(l, i=0):
+        if(i == index):
+            l.rest = Link(l.first, l.rest)
+            l.first = value
+        else:
+            helper(l.rest, i+1)
+    return helper(link)
 
+def link_len(link):
+    if(link is Link.empty):
+        return 0
+    else:
+        return 1 + link_len(link.rest)
 # Link CLass
 class Link:
     """A linked list.
