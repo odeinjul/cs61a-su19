@@ -12,10 +12,10 @@
           ((contains? seen-so-far (car curr)) #t)
           (else (pair-tracker (cons (car curr) seen-so-far) (cdr-stream curr))))
     )
-  (pair-tracker (list s) s)
+  (pair-tracker (list s) s)  ;storaging streams
 )
 
-(define (contains? lst s)
+(define (contains? lst s)  ;comparing streams
   (if (null? lst)
     #f 
     (if (equal? s (car lst))
